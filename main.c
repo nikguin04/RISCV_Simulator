@@ -8,11 +8,36 @@ static char memory[0x100000];
 static int32_t registers[32];
 static uint32_t *program;
 
+#define BIT_MASK(bits) ((1 << (bits)) - 1)
+#define BITS(value, a, b) ((value >> a) & BIT_MASK(b - a + 1))
+
 void printBinary(unsigned int n, uint8_t len) {
 	for (int i = len - 1; i >= 0; i--) {
 		putchar((n & (1u << i)) ? '1' : '0');
 	}
 	putchar('\n');
+}
+
+void executeInstruction(uint32_t instruction) {
+	int opcode = BITS(instruction, 0, 6);
+	int rd = BITS(instruction, 7, 11);
+	int funct3 = BITS(instruction, 12, 14);
+	int rs1 = BITS(instruction, 15, 19);
+	int rs2 = BITS(instruction, 20, 24);
+	int funct7 = BITS(instruction, 25, 31);
+	// The lowest two bits are 11 for all valid instructions
+	switch (opcode >> 2) {
+	case 0b00000: // LOAD
+	case 0b01000: // STORE
+	case 0b11000: // STORE
+	case 0b11001: // JALR
+	case 0b11011: // JALR
+	case 0b11100: // SYSTEM
+	case 0b00100: // OP-IMM
+	case 0b01100: // OP
+	case 0b00101: // AUIPC
+	case 0b01101: // LUI
+	}
 }
 
 int main(int argc, char *argv[]) {
