@@ -4,6 +4,14 @@
 
 #define TEST_FILE "./tests/task1/addlarge.bin"
 
+
+void printBinary(unsigned int n, uint8_t len) {
+    for (int i = len-1; i >= 0; i--) {
+        putchar((n & (1u << i)) ? '1' : '0');
+    }
+    putchar('\n');
+}
+
 int main(int argc, char const *argv[]) {
     printf("Hello World\n");
 
@@ -15,7 +23,11 @@ int main(int argc, char const *argv[]) {
     uint32_t* program = malloc(size); // we assume file is always 32 bit alligned!
     fgets((char*)program, size, fptr);
     for (int i = 0; i < size/4; i++) { // DUMP HEX
-        printf("%08X\t", program[i]);
+        uint32_t instruction = program[i];
+        printf("%08X\t", instruction);
+
+        uint8_t opcode = instruction & 0b01111111;
+        printBinary(opcode, 8);
     }
 
     return 0;
