@@ -4,6 +4,8 @@
 
 #define TEST_FILE "./tests/task1/addlarge.bin"
 
+static char MEMORY[0x100000];
+static int32_t REGISTERS[32];
 
 void printBinary(unsigned int n, uint8_t len) {
 	for (int i = len - 1; i >= 0; i--) {
