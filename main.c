@@ -18,6 +18,11 @@ void printBinary(unsigned int n, uint8_t len) {
 	putchar('\n');
 }
 
+[[noreturn]] void invalidInstruction(uint32_t instruction) {
+	fprintf(stderr, "Invalid instruction: %08X", instruction);
+	exit(1);
+}
+
 void executeInstruction(uint32_t instruction) {
 	int opcode = BITS(instruction, 0, 6);
 	int rd = BITS(instruction, 7, 11);
@@ -25,18 +30,42 @@ void executeInstruction(uint32_t instruction) {
 	int rs1 = BITS(instruction, 15, 19);
 	int rs2 = BITS(instruction, 20, 24);
 	int funct7 = BITS(instruction, 25, 31);
+	int imm = 0;
+	if (instruction & 0b11 != 0b11) invalidInstruction(instruction);
 	// The lowest two bits are 11 for all valid instructions
 	switch (opcode >> 2) {
+	case 0b01100: // OP
+		// R-type
+		break;
 	case 0b00000: // LOAD
-	case 0b01000: // STORE
-	case 0b11000: // STORE
 	case 0b11001: // JALR
-	case 0b11011: // JALR
 	case 0b11100: // SYSTEM
 	case 0b00100: // OP-IMM
-	case 0b01100: // OP
+		// I-type
+		imm = (funct7 << 5) | rs2;
+		break;
+	case 0b01000: // STORE
+		// S-type
+		imm = (funct7 << 5) | rd;
+		break;
+	case 0b11000: // BRANCH
+		// B-type
+		imm = (funct7 << 5) | rd;
+		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | ((imm & (1 << 11)) << 1);
+		break;
 	case 0b00101: // AUIPC
 	case 0b01101: // LUI
+		// U-type
+		imm = instruction & ~BIT_MASK(12);
+		break;
+	case 0b11011: // JAL
+		// J-type
+		imm = (funct7 << 5) | rs2;
+		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | (imm & (1 << 11) << (20 - 11));
+		imm |= instruction & (BIT_MASK(19) ^ BIT_MASK(11));
+		break;
+	default: // Extension, reserved, or custom opcode
+		invalidInstruction(instruction);
 	}
 }
 
