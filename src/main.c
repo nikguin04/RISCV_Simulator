@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <stdint.h>
 
+#include "memory.h"
+#include "instruction_forward.h"
+
 #define TEST_FILE "./tests/task1/addlarge.bin"
 
-static char memory[0x100000];
-static int32_t registers[32];
-static uint32_t *program;
+
 
 #define BIT_MASK(bits) ((1 << (bits)) - 1)
 #define BITS(value, a, b) ((value >> a) & BIT_MASK(b - a + 1))
@@ -24,6 +25,7 @@ void printBinary(unsigned int n, uint8_t len) {
 }
 
 void executeInstruction(uint32_t instruction) {
+
 	int opcode = BITS(instruction, 0, 6);
 	int rd = BITS(instruction, 7, 11);
 	int funct3 = BITS(instruction, 12, 14);
@@ -52,6 +54,7 @@ void executeInstruction(uint32_t instruction) {
 		// B-type
 		imm = (funct7 << 5) | rd;
 		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | ((imm & (1 << 11)) << 1);
+		handle_b_type(instruction, imm);
 		break;
 	case 0b00101: // AUIPC
 	case 0b01101: // LUI
