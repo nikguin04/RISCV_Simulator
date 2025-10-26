@@ -28,9 +28,9 @@ void executeInstruction(uint32_t instruction) {
 
 	int opcode = BITS(instruction, 0, 6);
 	int rd = BITS(instruction, 7, 11);
-	int funct3 = BITS(instruction, 12, 14);
-	int rs1 = BITS(instruction, 15, 19);
-	int rs2 = BITS(instruction, 20, 24);
+	uint8_t funct3 = BITS(instruction, 12, 14);
+	uint8_t rs1 = BITS(instruction, 15, 19);
+	uint8_t rs2 = BITS(instruction, 20, 24);
 	int funct7 = BITS(instruction, 25, 31);
 	int imm = 0;
 	if (instruction & 0b11 != 0b11) invalidInstruction(instruction);
@@ -52,14 +52,9 @@ void executeInstruction(uint32_t instruction) {
 		break;
 	case 0b11000: // BRANCH
 		// B-type
-		imm = (funct7 << 5) | rd;
-		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | ((imm & (1 << 11)) << 1);
-		uint16_t offset =
-			(instruction & (1 << 31)) >> 19    // 31 bit = 12 offset bit
-			| (BITS(instruction, 25, 30)) << 5 // 30-25 bits = 10-5 offset bit
-			| (instruction & (1 << 7)) << 4    // 7 bit = 11 offset bit
-			| (BITS(instruction, 8, 11)) << 1; // 11-8 bits = 1-4 offset bit
-		//handle_b_type(funct3, imm);
+		// imm = (funct7 << 5) | rd;
+		// imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | ((imm & (1 << 11)) << 1);
+		handle_b_type(instruction, funct3, rs1, rs2);
 		break;
 	case 0b00101: // AUIPC
 	case 0b01101: // LUI
