@@ -2,26 +2,17 @@
 	"version": 8,
 	"configurePresets": [
 		{
-			"name": "Visual Studio Community 2022 Release - amd64",
-			"displayName": "Visual Studio Community 2022 Release - amd64",
-			"description": "Using compilers for Visual Studio 17 2022 (x64 architecture)",
-			"generator": "Visual Studio 17 2022",
-			"toolset": "host=x64",
-			"architecture": "x64",
+			"name": "GCC",
+			"displayName": "GCC",
+			"description": "Using compilers: C = gcc.exe, CXX = g++.exe",
+			"generator": "MinGW Makefiles",
 			"binaryDir": "${sourceDir}/build/",
 			"cacheVariables": {
 				"CMAKE_INSTALL_PREFIX": "${sourceDir}/build/install/${presetName}",
-				"CMAKE_C_COMPILER": "cl.exe",
-				"CMAKE_CXX_COMPILER": "cl.exe"
+				"CMAKE_C_COMPILER": "gcc.exe",
+				"CMAKE_CXX_COMPILER": "g++.exe",
+				"CMAKE_BUILD_TYPE": "Debug"
 			}
-		}
-	],
-	"buildPresets": [
-		{
-			"name": "Visual Studio Community 2022 Release - amd64-debug",
-			"displayName": "Visual Studio Community 2022 Release - amd64 - Debug",
-			"configurePreset": "Visual Studio Community 2022 Release - amd64",
-			"configuration": "Debug"
 		}
 	]
 }

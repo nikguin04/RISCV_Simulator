@@ -3,11 +3,11 @@
   "configurations": [
     {
       "name": "Run RISC-V Simulator",
-      "type": "cppvsdbg",
+      "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/build/Debug/RISCV_Simulator",
+      "program": "${workspaceFolder}/build/RISCV_Simulator",
       "args": [],
-      "stopAtEntry": false,
+      "stopAtEntry": true,
       "cwd": "${workspaceFolder}",
       "environment": [],
       "externalConsole": false,
