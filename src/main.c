@@ -5,7 +5,7 @@
 #include "memory.h"
 #include "instruction_forward.h"
 
-#define TEST_FILE "./tests/task1/addlarge.bin"
+#define TEST_FILE "./tests/custom/btype_offsettest.bin"
 
 
 
@@ -54,7 +54,12 @@ void executeInstruction(uint32_t instruction) {
 		// B-type
 		imm = (funct7 << 5) | rd;
 		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | ((imm & (1 << 11)) << 1);
-		handle_b_type(instruction, imm);
+		uint16_t offset =
+			(instruction & (1 << 31) >> 19)    // 31 bit = 12 offset bit
+			| (BITS(instruction, 25, 30) << 5) // 30-25 bits = 10-5 offset bit
+			| (instruction & (1 << 7) << 4)    // 7 bit = 11 offset bit
+			| (BITS(instruction, 8, 11) << 1); // 11-8 bits = 1-4 offset bit
+		//handle_b_type(funct3, imm);
 		break;
 	case 0b00101: // AUIPC
 	case 0b01101: // LUI
@@ -86,12 +91,16 @@ int main(int argc, char *argv[]) {
 
 		uint8_t opcode = instruction & 0b01111111;
 		printBinary(opcode, 8);
+
+		executeInstruction(instruction);
 	}
 
 	// Print out all the register values
 	for (int i = 0; i < 32; i++) {
 		printf("x%d = %i (0x%X)", i, registers[i], registers[i]);
 	}
+
+
 
 	free(program);
 	return 0;
