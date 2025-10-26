@@ -16,5 +16,4 @@
 	"C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
 	"C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyFunction": true,
 	"C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyType": true,
-	"C_Cpp.default.compilerPath": "C:/Program Files/mingw64/bin/gcc.exe",
 }
