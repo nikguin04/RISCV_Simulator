@@ -46,12 +46,14 @@ void handle_r_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint8_t rs2, uint8_t
 	case 100: // XOR
 		break;
 	case 101: // SRL / SRA
+		registers[rd] = funct7 ? registers[rs1] - registers[rs2] : registers[rs1] + registers[rs2]; // if funct7 is true then SRA
 		break;
 	case 110: // OR
+		registers[rd] = registers[rs1] | registers[rs2];
 		break;
 	case 111: //AND
+		registers[rd] = registers[rs1] & registers[rs2];
 		break;
-
 	default:
 		break;
 	}
