@@ -22,13 +22,13 @@ void printBinary(unsigned int n, uint8_t len) {
 
 void executeInstruction(uint32_t instruction) {
 
-	int opcode = BITS(instruction, 0, 6);
-	int rd = BITS(instruction, 7, 11);
+	uint8_t opcode = BITS(instruction, 0, 6);
+	uint8_t rd = BITS(instruction, 7, 11);
 	uint8_t funct3 = BITS(instruction, 12, 14);
 	uint8_t rs1 = BITS(instruction, 15, 19);
 	uint8_t rs2 = BITS(instruction, 20, 24);
-	int funct7 = BITS(instruction, 25, 31);
-	int imm = 0;
+	uint8_t funct7 = BITS(instruction, 25, 31);
+	int32_t imm = 0;
 	if (instruction & 0b11 != 0b11) invalidInstruction(instruction);
 	// The lowest two bits are 11 for all valid instructions
 	switch (opcode >> 2) {
@@ -43,7 +43,7 @@ void executeInstruction(uint32_t instruction) {
 		break;
 	case 0b00100: // OP-IMM
 		// I-type
-		imm = (funct7 << 5) | rs2; // TODO: I dont think this handles signed ints
+		imm = ((funct7 & (1 << 6)) ? (BIT_MASK(21) << 11) : 0) | ((funct7 & BIT_MASK(6)) << 5) | rs2; // TODO: I dont think this handles signed ints
 		handle_i_type(rd, funct3, rs1, imm);
 		break;
 	case 0b01000: // STORE
@@ -60,6 +60,7 @@ void executeInstruction(uint32_t instruction) {
 	case 0b01101: // LUI
 		// U-type
 		imm = instruction & ~BIT_MASK(12);
+		handle_u_type(rd, imm, instruction & (1 << 5));
 		break;
 	case 0b11011: // JAL
 		// J-type

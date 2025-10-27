@@ -23,10 +23,10 @@ void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs
 	pc += offset;
 }
 
-void handle_u_type(uint8_t rd, uint32_t imm, bool opcode_bit_5) {
+void handle_u_type(uint8_t rd, int32_t imm, bool opcode_bit_5) {
 	// LUI
 	if (opcode_bit_5) {
-		registers[rd] = imm << 12;
+		registers[rd] = imm;
 	}
 	// later Add AUIPC
 
@@ -35,7 +35,7 @@ void handle_u_type(uint8_t rd, uint32_t imm, bool opcode_bit_5) {
 void handle_r_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint8_t rs2, uint8_t funct7) {
 	switch (funct3) {
 	case 000: // ADD / SUB
-		registers[rd] = funct7 ? registers[rs1] + registers[rs2] : registers[rs1] - registers[rs2];
+		registers[rd] = funct7 ? registers[rs1] - registers[rs2] : registers[rs1] + registers[rs2];
 		return;
 	default:
 		break;
@@ -62,7 +62,7 @@ void handle_syscall(bool bit20) {
 		case 10:
 			// Print out all the register values
 			for (int i = 0; i < 32; i++) {
-				printf("x%d = %i (0x%X)", i, registers[i], registers[i]);
+				printf("x%d = %i (0x%X)\n", i, registers[i], registers[i]);
 			}
 			exit(0);
 
