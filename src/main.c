@@ -8,10 +8,6 @@
 #define TEST_FILE "./tests/task1/addlarge.bin"
 
 
-
-#define BIT_MASK(bits) ((1 << (bits)) - 1)
-#define BITS(value, a, b) ((value >> a) & BIT_MASK(b - a + 1))
-
 void printBinary(unsigned int n, uint8_t len) {
 	for (int i = len - 1; i >= 0; i--) {
 		putchar((n & (1u << i)) ? '1' : '0');
@@ -83,20 +79,12 @@ int main(int argc, char *argv[]) {
 	//program = malloc(size); // We assume file is always 32 bit aligned!
 	fread(memory, 1, size, file); // For now assume no errors and that everything is read at once
 
-	for (int i = 0; i < size / 4; i++) { // DUMP HEX
-		uint32_t instruction = program[i];
-		printf("%08X\t", instruction);
-
-		uint8_t opcode = instruction & 0b01111111;
-		printBinary(opcode, 8);
-
-		executeInstruction(instruction);
+	while (true) {
+		uint32_t* instruction = (uint32_t *)(memory + pc);
+		pc += 4;
+		executeInstruction(*instruction);
 	}
 
-	
 
-
-
-	free(program);
 	return 0;
 }

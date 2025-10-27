@@ -2,6 +2,8 @@
 #define INSTRUCTION_FORWARD_H
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include "memory.h"
 void handle_r_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint8_t rs2, uint8_t funct7);
 void handle_i_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint16_t imm);
