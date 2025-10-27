@@ -34,6 +34,7 @@ void executeInstruction(uint32_t instruction) {
 	switch (opcode >> 2) {
 	case 0b01100: // OP
 		// R-type
+		handle_r_type(rd, funct3, rs1, rs2, funct7);
 		break;
 	case 0b00000: // LOAD
 	case 0b11001: // JALR
@@ -42,7 +43,8 @@ void executeInstruction(uint32_t instruction) {
 		break;
 	case 0b00100: // OP-IMM
 		// I-type
-		imm = (funct7 << 5) | rs2;
+		imm = (funct7 << 5) | rs2; // TODO: I dont think this handles signed ints
+		handle_i_type(rd, funct3, rs1, imm);
 		break;
 	case 0b01000: // STORE
 		// S-type
@@ -80,7 +82,7 @@ int main(int argc, char *argv[]) {
 	fread(memory, 1, size, file); // For now assume no errors and that everything is read at once
 
 	while (true) {
-		uint32_t* instruction = (uint32_t *)(memory + pc);
+		uint32_t *instruction = (uint32_t *)(memory + pc);
 		pc += 4;
 		executeInstruction(*instruction);
 	}

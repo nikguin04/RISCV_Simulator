@@ -24,6 +24,26 @@ void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs
 	pc += offset;
 }
 
+void handle_r_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint8_t rs2, uint8_t funct7) {
+	switch (funct3) {
+	case 000: // ADD / SUB
+		registers[rd] = funct7 ? registers[rs1] + registers[rs2] : registers[rs1] - registers[rs2];
+		return;
+	default:
+		break;
+	}
+}
+
+void handle_i_type(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
+	switch (funct3) {
+	case 000: // ADDI
+		registers[rd] = registers[rs1] + imm;
+		return;
+	default:
+		break;
+	}
+}
+
 void handle_syscall(bool bit20) {
 
 	if (bit20) {
