@@ -1,6 +1,5 @@
 #include "instruction_forward.h"
 void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs2) {
-	int a = 0;
 	switch (funct3) {
 	case 000: // BEQ
 		if (registers[rs1] == registers[rs2]) { break; } else { return; }
@@ -24,6 +23,19 @@ void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs
 	pc += offset;
 }
 
+
+
+void handle_u_type(uint8_t rd, uint32_t imm, bool opcode_bit_5) {
+	// LUI
+	if (opcode_bit_5) {
+		registers[rd] = imm << 12;
+	}
+	// later Add AUIPC
+
+
+
+}
+
 void handle_syscall(bool bit20) {
 
 	if (bit20) {
@@ -42,5 +54,4 @@ void handle_syscall(bool bit20) {
 			exit(1);
 		}
 	}
-
 }
