@@ -4,7 +4,6 @@
 #include <stdint.h>
 extern char memory[];
 extern int32_t registers[];
-extern uint32_t *program;
 extern uint32_t pc;
 
 #endif

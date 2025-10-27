@@ -10,4 +10,6 @@ void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs
 void handle_u_type(uint8_t rd, uint32_t imm, bool opcode_bit_5);
 void handle_j_type(uint8_t rd, uint32_t imm);
 
+void handle_syscall(bool bit20);
+
 #endif

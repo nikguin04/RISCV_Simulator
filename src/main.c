@@ -5,7 +5,7 @@
 #include "memory.h"
 #include "instruction_forward.h"
 
-#define TEST_FILE "./tests/custom/btype_offsettest.bin"
+#define TEST_FILE "./tests/task1/addlarge.bin"
 
 
 
@@ -42,6 +42,8 @@ void executeInstruction(uint32_t instruction) {
 	case 0b00000: // LOAD
 	case 0b11001: // JALR
 	case 0b11100: // SYSTEM
+		handle_syscall(instruction & (1 << 20));
+		break;
 	case 0b00100: // OP-IMM
 		// I-type
 		imm = (funct7 << 5) | rs2;
@@ -77,8 +79,9 @@ int main(int argc, char *argv[]) {
 	fseek(file, 0L, SEEK_END);
 	long size = ftell(file); // Seek to end and get position
 	fseek(file, 0L, SEEK_SET); // Rewind to start
-	program = malloc(size); // We assume file is always 32 bit aligned!
-	fread(program, 1, size, file); // For now assume no errors and that everything is read at once
+	// Boopstrapping: Program into memory
+	//program = malloc(size); // We assume file is always 32 bit aligned!
+	fread(memory, 1, size, file); // For now assume no errors and that everything is read at once
 
 	for (int i = 0; i < size / 4; i++) { // DUMP HEX
 		uint32_t instruction = program[i];
@@ -90,10 +93,7 @@ int main(int argc, char *argv[]) {
 		executeInstruction(instruction);
 	}
 
-	// Print out all the register values
-	for (int i = 0; i < 32; i++) {
-		printf("x%d = %i (0x%X)", i, registers[i], registers[i]);
-	}
+	
 
 
 

@@ -23,3 +23,24 @@ void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs
 		| (BITS(instruction, 8, 11)) << 1; // 11-8 bits = 1-4 offset bit
 	pc += offset;
 }
+
+void handle_syscall(bool bit20) {
+
+	if (bit20) {
+		// EBREAK
+	} else {
+		// ECALL
+		switch (registers[17]) {
+		case 10:
+			// Print out all the register values
+			for (int i = 0; i < 32; i++) {
+				printf("x%d = %i (0x%X)", i, registers[i], registers[i]);
+			}
+			exit(0);
+
+		default:
+			exit(1);
+		}
+	}
+
+}
