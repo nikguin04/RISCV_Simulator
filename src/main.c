@@ -1,6 +1,6 @@
 #include <executer.h>
 
-#define TEST "./tests/task1/addlarge"
+#define TEST "./tests/task2/branchcnt"
 #define TEST_FILE TEST ".bin"
 #define TEST_RESULTFILE TEST ".res"
 
