@@ -50,7 +50,8 @@ void exec_auipc(instruction_t i) {
 void exec_op(instruction_t i) {
 	switch (i.funct3) {
 	case 000: // ADD / SUB
-		registers[i.rd] = i.funct7 ? registers[i.rs1] - registers[i.rs2] : registers[i.rs1] + registers[i.rs2];
+		bool sub = i.funct7;
+		registers[i.rd] = sub ? registers[i.rs1] - registers[i.rs2] : registers[i.rs1] + registers[i.rs2];
 		return;
 	case 001: // SLL
 		registers[i.rd] = registers[i.rs1] << registers[i.rs2];
@@ -59,13 +60,14 @@ void exec_op(instruction_t i) {
 		registers[i.rd] = registers[i.rs1] < registers[i.rs2] ? 1 : 0;
 		break;
 	case 011: // SLTU
-		registers[i.rd] = registers[i.rs2] != 0 ? 1 : 0;
+		registers[i.rd] = (uint32_t)registers[i.rs1] < (uint32_t)registers[i.rs2] != 0 ? 1 : 0;
 		break;
 	case 100: // XOR
 		registers[i.rd] = registers[i.rs1] ^ registers[i.rs2];
 		break;
 	case 101: // SRL / SRA
-		registers[i.rd] = i.funct7 ? registers[i.rs1] >> registers[i.rs2] : registers[i.rs1] + registers[i.rs2]; // if funct7 is true then SRA
+		bool sra = i.funct7;
+		registers[i.rd] = sra ? registers[i.rs1] >> registers[i.rs2] : (uint32_t)registers[i.rs1] >> registers[i.rs2];
 		break;
 	case 110: // OR
 		registers[i.rd] = registers[i.rs1] | registers[i.rs2];
