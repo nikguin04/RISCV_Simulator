@@ -4,115 +4,125 @@
 #include "instruction_forward.h"
 #include "memory.h"
 
-void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs2) {
-	switch (funct3) {
+void exec_branch(instruction_t i) {
+	switch (i.funct3) {
 	case 0b000: // BEQ
-		if (registers[rs1] == registers[rs2]) { break; } else { return; }
+		if (registers[i.rs1] == registers[i.rs2]) { break; } else { return; }
 	case 0b001: // BNE
-		if (registers[rs1] != registers[rs2]) { break; } else { return; }
+		if (registers[i.rs1] != registers[i.rs2]) { break; } else { return; }
 	case 0b100: // BLT
-		if (registers[rs1] < registers[rs2]) { break; } else { return; }
+		if (registers[i.rs1] < registers[i.rs2]) { break; } else { return; }
 	case 0b101: // BGE
-		if (registers[rs1] >= registers[rs2]) { break; } else { return; }
+		if (registers[i.rs1] >= registers[i.rs2]) { break; } else { return; }
 	case 0b110: // BLTU
-		if ((uint32_t)registers[rs1] < (uint32_t)registers[rs2]) { break; } else { return; }
+		if ((uint32_t)registers[i.rs1] < (uint32_t)registers[i.rs2]) { break; } else { return; }
 	case 0b111: // BGEU
-		if ((uint32_t)registers[rs1] >= (uint32_t)registers[rs2]) { break; } else { return; }
+		if ((uint32_t)registers[i.rs1] >= (uint32_t)registers[i.rs2]) { break; } else { return; }
 	default:
 		exit(1);
 	}
 
-	int16_t offset =
-		(instruction & (1 << 31)) >> 19    // 31 bit = 12 offset bit
-		| (BITS(instruction, 25, 30)) << 5 // 30-25 bits = 10-5 offset bit
-		| (instruction & (1 << 7)) << 4    // 7 bit = 11 offset bit
-		| (BITS(instruction, 8, 11)) << 1 // 11-8 bits = 1-4 offset bit
-		| (instruction & (1 << 31) ? BIT_MASK(3) << 13 : 0); // Extend 15-13 bits arithmetic
-	pc += offset;
-	pc -= 4; // TODO: Check how PC is incremented when executing instruction, this is a quick workaround for now
+	pc += i.imm;
+	pc -= 4; // TODO: Check how PC is incremented when executing i, this is a quick workaround for now
 }
 
-void handle_u_type(uint8_t rd, int32_t imm, bool opcode_bit_5) {
-	// LUI
-	if (opcode_bit_5) {
-		registers[rd] = imm;
-	}
-	// later Add AUIPC
 
+void exec_jal(instruction_t i) {
+	// TODO
 }
 
-void handle_r_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint8_t rs2, uint8_t funct7) {
-	switch (funct3) {
+
+void exec_jalr(instruction_t i) {
+	// TODO
+}
+
+
+void exec_lui(instruction_t i) {
+	registers[i.rd] = i.imm;
+}
+
+
+void exec_auipc(instruction_t i) {
+	// TODO
+}
+
+
+void exec_op(instruction_t i) {
+	switch (i.funct3) {
 	case 000: // ADD / SUB
-		registers[rd] = funct7 ? registers[rs1] - registers[rs2] : registers[rs1] + registers[rs2];
+		registers[i.rd] = i.funct7 ? registers[i.rs1] - registers[i.rs2] : registers[i.rs1] + registers[i.rs2];
 		return;
 	case 001: // SLL
-		registers[rd] = registers[rs1] << registers[rs2];
+		registers[i.rd] = registers[i.rs1] << registers[i.rs2];
 		break;
 	case 010: // SLT
-		registers[rd] = registers[rs1] < registers[rs2] ? 1 : 0;
+		registers[i.rd] = registers[i.rs1] < registers[i.rs2] ? 1 : 0;
 		break;
 	case 011: // SLTU
-		registers[rd] = registers[rs2] != 0 ? 1 : 0;
+		registers[i.rd] = registers[i.rs2] != 0 ? 1 : 0;
 		break;
 	case 100: // XOR
-		registers[rd] = registers[rs1] ^ registers[rs2];
+		registers[i.rd] = registers[i.rs1] ^ registers[i.rs2];
 		break;
 	case 101: // SRL / SRA
-		registers[rd] = funct7 ? registers[rs1] >> registers[rs2] : registers[rs1] + registers[rs2]; // if funct7 is true then SRA
+		registers[i.rd] = i.funct7 ? registers[i.rs1] >> registers[i.rs2] : registers[i.rs1] + registers[i.rs2]; // if funct7 is true then SRA
 		break;
 	case 110: // OR
-		registers[rd] = registers[rs1] | registers[rs2];
+		registers[i.rd] = registers[i.rs1] | registers[i.rs2];
 		break;
 	case 111: //AND
-		registers[rd] = registers[rs1] & registers[rs2];
+		registers[i.rd] = registers[i.rs1] & registers[i.rs2];
 		break;
 	default:
-		break;
+		exit(1);
 	}
 }
 
 
-//// S-TYPE
-void exec_store(uint8_t funct3, uint8_t rs1, uint8_t rs2, int16_t imm) {
-	switch (funct3) {
+void exec_store(instruction_t i) {
+	switch (i.funct3) {
 	case 0b000: // SB
-		memory[rs1 + imm] = registers[rs2];
+		memory[i.rs1 + i.imm] = (uint8_t)registers[i.rs2];
+		return;
+	case 0b001: // SH
+		(uint16_t)memory[i.rs1 + i.imm] = (uint16_t)registers[i.rs2];
+		return;
+	case 0b010: // SW
+		(int32_t)memory[i.rs1 + i.imm] = registers[i.rs2];
 		return;
 	default:
 		break;
 	}
 }
-//// S-TYPE
 
 
-//// I-TYPE
-void exec_op_imm(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
-	switch (funct3) {
+void exec_op_imm(instruction_t i) {
+	switch (i.funct3) {
 	case 0b000: // ADDI
-		registers[rd] = registers[rs1] + imm;
+		registers[i.rd] = registers[i.rs1] + i.imm;
 		return;
 	default:
 		break;
 	}
 }
 
-void exec_load(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
-	switch (funct3) {
+
+void exec_load(instruction_t i) {
+	switch (i.funct3) {
 	case 0b000: // LB
-		registers[rd] = (int32_t)(int8_t)memory[registers[rs1] + imm];
+		registers[i.rd] = (int32_t)(int8_t)memory[registers[i.rs1] + i.imm];
 		return;
 	case 0b001: // LH
-		registers[rd] = (int32_t)(int16_t)memory[registers[rs1] + imm];
+		registers[i.rd] = (int32_t)(int16_t)memory[registers[i.rs1] + i.imm];
 		return;
 	case 0b010: // LW
-		registers[rd] = (int32_t)memory[registers[rs1] + imm];
+		registers[i.rd] = (int32_t)memory[registers[i.rs1] + i.imm];
 		return;
 	case 0b100: // LBU
-		registers[rd] = memory[registers[rs1] + imm];
+		registers[i.rd] = memory[registers[i.rs1] + i.imm];
 		return;
 	case 0b101: // LHU
-		registers[rd] = (uint16_t)memory[registers[rs1] + imm];
+		registers[i.rd] = (uint16_t)memory[registers[i.rs1] + i.imm];
 		return;
 	default:
 		break;
@@ -120,8 +130,8 @@ void exec_load(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
 }
 
 
-void handle_syscall(bool bit20) {
-	if (bit20) {
+void exec_system(instruction_t i) {
+	if (i.imm) {
 		// EBREAK
 	} else {
 		// ECALL
@@ -133,10 +143,8 @@ void handle_syscall(bool bit20) {
 				printf("%08X", registers[i]); // EX: 80000001
 			}
 			exit(0);
-
 		default:
 			exit(1);
 		}
 	}
 }
-//// I-TYPE
