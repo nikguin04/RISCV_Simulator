@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdint.h>
-#include "executer.h"
+#include "executor.h"
 
 void printBinary(unsigned int n, uint8_t len) {
 	for (int i = len - 1; i >= 0; i--) {

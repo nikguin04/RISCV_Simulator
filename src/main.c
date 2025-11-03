@@ -1,4 +1,4 @@
-#include "executer.h"
+#include "executor.h"
 
 #define TEST "./tests/task2/branchcnt"
 #define TEST_FILE TEST ".bin"
