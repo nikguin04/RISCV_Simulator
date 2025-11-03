@@ -67,9 +67,24 @@ void handle_r_type(uint8_t rd, uint8_t funct3, uint8_t rs1, uint8_t rs2, uint8_t
 	}
 }
 
-void handle_i_type(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
+
+//// S-TYPE
+void exec_store(uint8_t funct3, uint8_t rs1, uint8_t rs2, int16_t imm) {
 	switch (funct3) {
-	case 000: // ADDI
+	case 0b000: // SB
+		memory[rs1 + imm] = registers[rs2];
+		return;
+	default:
+		break;
+	}
+}
+//// S-TYPE
+
+
+//// I-TYPE
+void exec_op_imm(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
+	switch (funct3) {
+	case 0b000: // ADDI
 		registers[rd] = registers[rs1] + imm;
 		return;
 	default:
@@ -77,8 +92,30 @@ void handle_i_type(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
 	}
 }
 
-void handle_syscall(bool bit20) {
+void exec_load(uint8_t rd, uint8_t funct3, uint8_t rs1, int16_t imm) {
+	switch (funct3) {
+	case 0b000: // LB
+		registers[rd] = (int32_t)(int8_t)memory[registers[rs1] + imm];
+		return;
+	case 0b001: // LH
+		registers[rd] = (int32_t)(int16_t)memory[registers[rs1] + imm];
+		return;
+	case 0b010: // LW
+		registers[rd] = (int32_t)memory[registers[rs1] + imm];
+		return;
+	case 0b100: // LBU
+		registers[rd] = memory[registers[rs1] + imm];
+		return;
+	case 0b101: // LHU
+		registers[rd] = (uint16_t)memory[registers[rs1] + imm];
+		return;
+	default:
+		break;
+	}
+}
 
+
+void handle_syscall(bool bit20) {
 	if (bit20) {
 		// EBREAK
 	} else {
@@ -97,3 +134,4 @@ void handle_syscall(bool bit20) {
 		}
 	}
 }
+//// I-TYPE
