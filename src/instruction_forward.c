@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "instruction_forward.h"
+#include "executor.h"
 #include "memory.h"
 
 void exec_branch(instruction_t i) {
@@ -22,7 +23,7 @@ void exec_branch(instruction_t i) {
 		exit(1);
 	}
 
-	pc += i.imm;
+	pc += SIGN_EXT(i.imm, 13);
 	pc -= 4; // TODO: Check how PC is incremented when executing i, this is a quick workaround for now
 }
 
@@ -82,15 +83,16 @@ void exec_op(instruction_t i) {
 
 
 void exec_store(instruction_t i) {
+	uint32_t address = i.rs1 + SIGN_EXT(i.imm, 12);
 	switch (i.funct3) {
 	case 0b000: // SB
-		memory[i.rs1 + i.imm] = (uint8_t)registers[i.rs2];
+		*(int8_t *)(memory + address) = (int8_t)registers[i.rs2];
 		return;
 	case 0b001: // SH
-		memory[i.rs1 + i.imm] = (uint16_t)registers[i.rs2];
+		*(int16_t *)(memory + address) = (int16_t)registers[i.rs2];
 		return;
 	case 0b010: // SW
-		memory[i.rs1 + i.imm] = registers[i.rs2];
+		*(int32_t *)(memory + address) = registers[i.rs2];
 		return;
 	default:
 		break;
@@ -101,10 +103,10 @@ void exec_store(instruction_t i) {
 void exec_op_imm(instruction_t i) {
 	switch (i.funct3) {
 	case 0b000: // ADDI
-		registers[i.rd] = registers[i.rs1] + i.imm; // TODO: Sign extend
+		registers[i.rd] = registers[i.rs1] + SIGN_EXT(i.imm, 12);
 		return;
 	case 0b010: // SLTI
-		registers[i.rd] = registers[i.rs1] < i.imm; // TODO: Sign extend
+		registers[i.rd] = registers[i.rs1] < SIGN_EXT(i.imm, 12);
 		return;
 	case 0b011: // SLTIU
 		registers[i.rd] = ((uint32_t)registers[i.rs1]) < i.imm;
@@ -125,21 +127,22 @@ void exec_op_imm(instruction_t i) {
 
 
 void exec_load(instruction_t i) {
+	uint32_t address = registers[i.rs1] + SIGN_EXT(i.imm, 12);
 	switch (i.funct3) {
 	case 0b000: // LB
-		registers[i.rd] = (int32_t)(int8_t)memory[registers[i.rs1] + i.imm];
+		registers[i.rd] = *(int8_t *)(memory + address);
 		return;
 	case 0b001: // LH
-		registers[i.rd] = (int32_t)(int16_t)memory[registers[i.rs1] + i.imm];
+		registers[i.rd] = *(int16_t *)(memory + address);
 		return;
 	case 0b010: // LW
-		registers[i.rd] = (int32_t)memory[registers[i.rs1] + i.imm];
+		registers[i.rd] = *(int32_t *)(memory + address);
 		return;
 	case 0b100: // LBU
-		registers[i.rd] = memory[registers[i.rs1] + i.imm];
+		registers[i.rd] = *(uint8_t *)(memory + address);
 		return;
 	case 0b101: // LHU
-		registers[i.rd] = (uint16_t)memory[registers[i.rs1] + i.imm];
+		registers[i.rd] = *(uint16_t *)(memory + address);
 		return;
 	default:
 		break;

@@ -5,6 +5,8 @@
 #include "instruction_decoding.h"
 #include "instruction_forward.h"
 
+#define SIGN_EXT(value, orig_size) (((int32_t)(value) << (32 - (orig_size))) >> (32 - (orig_size)))
+
 void executeInstruction(instruction_t);
 void executeProgram(const char *test_file);
 

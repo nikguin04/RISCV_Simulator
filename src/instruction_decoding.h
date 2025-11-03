@@ -12,7 +12,7 @@ typedef struct {
 	uint8_t rs2;
 	uint8_t funct3;
 	uint8_t funct7;
-	int32_t imm;
+	uint32_t imm;
 } instruction_t;
 
 instruction_t decodeInstruction(uint32_t instruction);
