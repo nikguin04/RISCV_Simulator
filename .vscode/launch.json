@@ -1,17 +1,17 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-    {
-      "name": "Run RISC-V Simulator",
-      "type": "cppdbg",
-      "request": "launch",
-      "program": "${workspaceFolder}/build/RISCV_Simulator",
-      "args": [],
-      "stopAtEntry": true,
-      "cwd": "${workspaceFolder}",
-      "environment": [],
-      "externalConsole": false,
-      "preLaunchTask": "Compile"
-    }
-  ]
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Run RISC-V Simulator",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/build/RISCV_Simulator",
+			"args": [],
+			"stopAtEntry": true,
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"preLaunchTask": "Compile"
+		}
+	]
 }
