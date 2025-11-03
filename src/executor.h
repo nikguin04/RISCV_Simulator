@@ -1,5 +1,5 @@
-#ifndef EXECUTER_H
-#define EXECUTER_H
+#ifndef EXECUTOR_H
+#define EXECUTOR_H
 
 #include "memory.h"
 #include "instruction_decoding.h"

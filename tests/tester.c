@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "executer.h"
+#include <stdlib.h>
+#include "executor.h"
 
 int main(int argc, char const *argv[]) {
 	char bin[256];
@@ -7,7 +8,7 @@ int main(int argc, char const *argv[]) {
 	char res[256];
 	sprintf(res, "%s.res", argv[1]);
 	// printf("%s - %s", bin, res);
-	execute_program(bin);
+	executeProgram(bin);
 
 	FILE *file = fopen(res, "rb");
 	fseek(file, 0L, SEEK_END);

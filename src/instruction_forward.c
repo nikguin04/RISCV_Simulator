@@ -85,10 +85,10 @@ void exec_store(instruction_t i) {
 		memory[i.rs1 + i.imm] = (uint8_t)registers[i.rs2];
 		return;
 	case 0b001: // SH
-		(uint16_t)memory[i.rs1 + i.imm] = (uint16_t)registers[i.rs2];
+		memory[i.rs1 + i.imm] = (uint16_t)registers[i.rs2];
 		return;
 	case 0b010: // SW
-		(int32_t)memory[i.rs1 + i.imm] = registers[i.rs2];
+		memory[i.rs1 + i.imm] = registers[i.rs2];
 		return;
 	default:
 		break;
