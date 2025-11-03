@@ -99,7 +99,22 @@ void exec_store(instruction_t i) {
 void exec_op_imm(instruction_t i) {
 	switch (i.funct3) {
 	case 0b000: // ADDI
-		registers[i.rd] = registers[i.rs1] + i.imm;
+		registers[i.rd] = registers[i.rs1] + i.imm; // TODO: Sign extend
+		return;
+	case 0b010: // SLTI
+		registers[i.rd] = registers[i.rs1] < i.imm; // TODO: Sign extend
+		return;
+	case 0b011: // SLTIU
+		registers[i.rd] = ((uint32_t)registers[i.rs1]) < i.imm;
+		return;
+	case 0b100: // XORI
+		registers[i.rd] = registers[i.rs1] ^ i.imm;
+		return;
+	case 0b110: // ORI
+		registers[i.rd] = registers[i.rs1] | i.imm;
+		return;
+	case 0b111: // ANDI
+		registers[i.rd] = registers[i.rs1] & i.imm;
 		return;
 	default:
 		break;
