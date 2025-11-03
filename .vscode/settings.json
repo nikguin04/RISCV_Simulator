@@ -16,13 +16,7 @@
 	"C_Cpp.vcFormat.newLine.beforeOpenBrace.type": "sameLine",
 	"C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyFunction": true,
 	"C_Cpp.vcFormat.newLine.closeBraceSameLine.emptyType": true,
-	"files.associations": {
-		"memory.h": "c",
-		"instruction_forward.h": "c",
-		"stdint.h": "c",
-		"stdio.h": "c",
-		"executer.h": "c"
-	},
+	"files.associations": { "*.h": "c" },
 	"cmake.ignoreCMakeListsMissing": true,
 	"cmake.sourceDirectory": "${workspaceFolder}",
 	"cmake.buildDirectory": "${workspaceFolder}/build",
