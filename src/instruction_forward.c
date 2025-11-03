@@ -1,4 +1,9 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <stdint.h>
 #include "instruction_forward.h"
+#include "memory.h"
+
 void handle_b_type(uint32_t instruction, uint8_t funct3, uint8_t rs1, uint8_t rs2) {
 	switch (funct3) {
 	case 0b000: // BEQ
