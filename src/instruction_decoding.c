@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "instruction_decoding.h"
 
 [[noreturn]] void invalidInstruction(uint32_t instruction) {

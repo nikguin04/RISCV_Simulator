@@ -1,6 +1,6 @@
 #include "executor.h"
 
-#define TEST "./tests/task2/branchcnt"
+#define TEST "./tests/task0/sblbtest"
 #define TEST_FILE TEST ".bin"
 #define TEST_RESULTFILE TEST ".res"
 
