@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
 #include "executor.h"
@@ -47,12 +48,20 @@ void executeInstruction(instruction_t instruction) {
 
 void executeProgram(const char *test_file) {
 	FILE *file = fopen(test_file, "rb");
+	if (file == NULL) {
+		perror("Failed to open executable binary");
+		exit(1);
+	}
 	fseek(file, 0L, SEEK_END);
 	long size = ftell(file); // Seek to end and get position
 	fseek(file, 0L, SEEK_SET); // Rewind to start
 	// Read the entire program into memory
-	fread(memory, 1, size, file); // For now assume no errors and that everything is read at once
+	size_t read = fread(memory, 1, size, file);
 	fclose(file);
+	if (read != size) {
+		fprintf(stderr, "Failed to read entire program into memory, managed to read %d/%d bytes", read, size);
+		exit(1);
+	}
 
 	while (!halt) {
 		uint32_t instruction = *(uint32_t *)(memory + pc);

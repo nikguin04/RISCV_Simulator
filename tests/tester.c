@@ -1,5 +1,5 @@
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include "executor.h"
 
@@ -15,9 +15,17 @@ int main(int argc, char *argv[]) {
 	strcpy(fileName + len, ".res");
 	int32_t expected[32];
 	FILE *file = fopen(fileName, "rb");
-	fread(expected, sizeof(int32_t), 32, file); // Assume no errors and that everything is read at once
+	if (file == NULL) {
+		perror("Failed to open result file");
+		exit(1);
+	}
+	size_t read = fread(expected, sizeof(int32_t), 32, file);
 	fclose(file);
 	free(fileName);
+	if (read != 32) {
+		fprintf(stderr, "Failed to read entire result file, managed to read %d/32 register values", read);
+		exit(1);
+	}
 
 	for (int i = 0; i < 32; i++) {
 		if (registers[i] != expected[i]) {

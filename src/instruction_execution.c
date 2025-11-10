@@ -178,6 +178,7 @@ void exec_system(instruction_t i) {
 			halt = true;
 			break;
 		default:
+			fprintf(stderr, "Unsupported environment call %d!", registers[17]);
 			exit(1);
 		}
 	}
