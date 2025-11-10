@@ -55,7 +55,7 @@ void exec_op(instruction_t i) {
 	case 0b000: // ADD / SUB
 		bool sub = i.funct7;
 		registers[i.rd] = sub ? registers[i.rs1] - registers[i.rs2] : registers[i.rs1] + registers[i.rs2];
-		return;
+		break;
 	case 0b001: // SLL
 		registers[i.rd] = registers[i.rs1] << registers[i.rs2];
 		break;
@@ -89,13 +89,13 @@ void exec_store(instruction_t i) {
 	switch (i.funct3) {
 	case 0b000: // SB
 		*(int8_t *)(memory + address) = (int8_t)registers[i.rs2];
-		return;
+		break;
 	case 0b001: // SH
 		*(int16_t *)(memory + address) = (int16_t)registers[i.rs2];
-		return;
+		break;
 	case 0b010: // SW
 		*(int32_t *)(memory + address) = registers[i.rs2];
-		return;
+		break;
 	default:
 		break;
 	}
@@ -106,29 +106,29 @@ void exec_op_imm(instruction_t i) {
 	switch (i.funct3) {
 	case 0b000: // ADDI
 		registers[i.rd] = registers[i.rs1] + SIGN_EXT(i.imm, 12);
-		return;
+		break;
 	case 0b010: // SLTI
 		registers[i.rd] = registers[i.rs1] < SIGN_EXT(i.imm, 12);
-		return;
+		break;
 	case 0b011: // SLTIU
 		registers[i.rd] = ((uint32_t)registers[i.rs1]) < i.imm;
-		return;
+		break;
 	case 0b100: // XORI
 		registers[i.rd] = registers[i.rs1] ^ i.imm;
-		return;
+		break;
 	case 0b110: // ORI
 		registers[i.rd] = registers[i.rs1] | i.imm;
-		return;
+		break;
 	case 0b111: // ANDI
 		registers[i.rd] = registers[i.rs1] & i.imm;
-		return;
+		break;
 	case 0b001: // SLLI
 		registers[i.rd] = registers[i.rs1] << i.imm;
-		return;
+		break;
 	case 0b101: // SRLI / SRAI
 		bool srai = i.funct7;
 		registers[i.rd] = srai ? (uint32_t)registers[i.rs1] >> i.imm : registers[i.rs1] >> i.imm;
-		return;
+		break;
 
 	default:
 		break;
@@ -141,19 +141,19 @@ void exec_load(instruction_t i) {
 	switch (i.funct3) {
 	case 0b000: // LB
 		registers[i.rd] = *(int8_t *)(memory + address);
-		return;
+		break;
 	case 0b001: // LH
 		registers[i.rd] = *(int16_t *)(memory + address);
-		return;
+		break;
 	case 0b010: // LW
 		registers[i.rd] = *(int32_t *)(memory + address);
-		return;
+		break;
 	case 0b100: // LBU
 		registers[i.rd] = *(uint8_t *)(memory + address);
-		return;
+		break;
 	case 0b101: // LHU
 		registers[i.rd] = *(uint16_t *)(memory + address);
-		return;
+		break;
 	default:
 		break;
 	}
