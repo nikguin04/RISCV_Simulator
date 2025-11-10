@@ -175,11 +175,6 @@ void exec_system(instruction_t i) {
 		// ECALL
 		switch (registers[17]) {
 		case 10:
-			// Print out all the register values
-			for (int i = 0; i < 32; i++) {
-				//printf("x%d = %i (0x%X)\n", i, registers[i], registers[i]); // EX: x10 = -2147483647 (0x80000001)
-				printf("%08X", registers[i]); // EX: 80000001
-			}
 			halt = true;
 			break;
 		default:
