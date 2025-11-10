@@ -85,7 +85,7 @@ void exec_op(instruction_t i) {
 
 
 void exec_store(instruction_t i) {
-	uint32_t address = i.rs1 + SIGN_EXT(i.imm, 12);
+	uint32_t address = registers[i.rs1] + SIGN_EXT(i.imm, 12);
 	switch (i.funct3) {
 	case 0b000: // SB
 		*(int8_t *)(memory + address) = (int8_t)registers[i.rs2];
