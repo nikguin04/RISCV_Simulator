@@ -24,20 +24,19 @@ void exec_branch(instruction_t i) {
 		exit(1);
 	}
 
-	pc += SIGN_EXT(i.imm, 13);
-	pc -= 4; // TODO: Check how PC is incremented when executing i, this is a quick workaround for now
+	pc += SIGN_EXT(i.imm, 13) - 4;
 }
 
 
 void exec_jal(instruction_t i) {
-	pc += SIGN_EXT(i.imm, 21);
-	registers[i.rd] = pc + 4;
+	registers[i.rd] = pc;
+	pc += SIGN_EXT(i.imm, 21) - 4;
 }
 
 
 void exec_jalr(instruction_t i) {
-	pc = (SIGN_EXT(i.imm, 12) + registers[i.rs1]) & ~1;
-	registers[i.rd] = pc + 4;
+	registers[i.rd] = pc;
+	pc = (registers[i.rs1] + SIGN_EXT(i.imm, 12)) & ~1;
 }
 
 
@@ -47,7 +46,7 @@ void exec_lui(instruction_t i) {
 
 
 void exec_auipc(instruction_t i) {
-	registers[i.rd] = i.imm + pc;
+	registers[i.rd] = pc + i.imm - 4;
 }
 
 
