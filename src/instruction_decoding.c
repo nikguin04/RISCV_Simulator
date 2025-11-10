@@ -45,7 +45,7 @@ instruction_t decodeInstruction(uint32_t instruction) {
 	case 0b11011: // JAL
 		// J-type
 		imm = (funct7 << 5) | rs2;
-		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | (imm & (1 << 11) << (20 - 11));
+		imm = (imm & ~(1 | 1 << 11)) | ((imm & 1) << 11) | ((imm & (1 << 11)) << (20 - 11));
 		imm |= instruction & (BIT_MASK(19) ^ BIT_MASK(11));
 		break;
 	default: // Extension, reserved, or custom opcode
