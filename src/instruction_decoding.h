@@ -17,6 +17,4 @@ typedef struct {
 
 instruction_t decodeInstruction(uint32_t instruction);
 
-[[noreturn]] void invalidInstruction(uint32_t instruction);
-
 #endif

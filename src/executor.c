@@ -52,6 +52,7 @@ void executeProgram(const char *test_file) {
 	fseek(file, 0L, SEEK_SET); // Rewind to start
 	// Read the entire program into memory
 	fread(memory, 1, size, file); // For now assume no errors and that everything is read at once
+	fclose(file);
 
 	while (true) {
 		uint32_t instruction = *(uint32_t *)(memory + pc);
