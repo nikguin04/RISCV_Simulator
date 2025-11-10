@@ -54,7 +54,7 @@ void executeProgram(const char *test_file) {
 	fread(memory, 1, size, file); // For now assume no errors and that everything is read at once
 	fclose(file);
 
-	while (true) {
+	while (!halt) {
 		uint32_t instruction = *(uint32_t *)(memory + pc);
 		instruction_t decoded = decodeInstruction(instruction);
 		pc += 4;

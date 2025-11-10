@@ -6,6 +6,8 @@
 #include "executor.h"
 #include "memory.h"
 
+bool halt = false;
+
 [[noreturn]] void invalidFunct3(const char *opcode, uint8_t funct3) {
 	fprintf(stderr, "Invalid funct3 for %s opcode: %3b", opcode, funct3);
 	exit(1);
@@ -178,7 +180,8 @@ void exec_system(instruction_t i) {
 				//printf("x%d = %i (0x%X)\n", i, registers[i], registers[i]); // EX: x10 = -2147483647 (0x80000001)
 				printf("%08X", registers[i]); // EX: 80000001
 			}
-			exit(0);
+			halt = true;
+			break;
 		default:
 			exit(1);
 		}
