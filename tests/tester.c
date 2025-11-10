@@ -1,26 +1,27 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "executor.h"
 
-int main(int argc, char const *argv[]) {
-	char bin[256];
-	sprintf(bin, "%s.bin", argv[1]);
-	char res[256];
-	sprintf(res, "%s.res", argv[1]);
-	// printf("%s - %s", bin, res);
-	executeProgram(bin);
+int main(int argc, char *argv[]) {
+	if (argc < 2) return 1;
+	size_t len = strlen(argv[1]);
+	char *fileName = malloc(len + 5);
+	memcpy(fileName, argv[1], len);
 
-	FILE *file = fopen(res, "rb");
-	fseek(file, 0L, SEEK_END);
-	long size = ftell(file); // Seek to end and get position
-	fseek(file, 0L, SEEK_SET); // Rewind to start
-	int32_t *expected;
-	expected = malloc(size); // We assume file is always 32 bit aligned!
-	fread(expected, 1, size, file); // For now assume no errors and that everything is read at once
+	strcpy(fileName + len, ".bin");
+	executeProgram(fileName);
 
-	for (int i = 0; i < size / 4; i++) {
+	strcpy(fileName + len, ".res");
+	int32_t expected[32];
+	FILE *file = fopen(fileName, "rb");
+	fread(expected, sizeof(int32_t), 32, file); // Assume no errors and that everything is read at once
+	fclose(file);
+	free(fileName);
+
+	for (int i = 0; i < 32; i++) {
 		if (registers[i] != expected[i]) {
-			printf("Register %d, are not as expected %08X - %08X (actual - expected)", i, registers[i], expected[i]);
+			printf("Register %d: expected 0x%08X, got 0x%08X", i, expected[i], registers[i]);
 			return 1;
 		}
 	}
