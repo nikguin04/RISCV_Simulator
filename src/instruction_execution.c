@@ -112,6 +112,9 @@ void exec_op_imm(instruction_t i) {
 	case 0b000: // ADDI
 		registers[i.rd] = registers[i.rs1] + SIGN_EXT(i.imm, 12);
 		break;
+	case 0b001: // SLLI
+		registers[i.rd] = registers[i.rs1] << i.imm;
+		break;
 	case 0b010: // SLTI
 		registers[i.rd] = registers[i.rs1] < SIGN_EXT(i.imm, 12);
 		break;
@@ -121,20 +124,16 @@ void exec_op_imm(instruction_t i) {
 	case 0b100: // XORI
 		registers[i.rd] = registers[i.rs1] ^ i.imm;
 		break;
+	case 0b101: // SRLI / SRAI
+		bool srai = i.funct7;
+		registers[i.rd] = srai ? registers[i.rs1] >> i.imm : (uint32_t)registers[i.rs1] >> i.imm;
+		break;
 	case 0b110: // ORI
 		registers[i.rd] = registers[i.rs1] | i.imm;
 		break;
 	case 0b111: // ANDI
 		registers[i.rd] = registers[i.rs1] & i.imm;
 		break;
-	case 0b001: // SLLI
-		registers[i.rd] = registers[i.rs1] << i.imm;
-		break;
-	case 0b101: // SRLI / SRAI
-		bool srai = i.funct7;
-		registers[i.rd] = srai ? (uint32_t)registers[i.rs1] >> i.imm : registers[i.rs1] >> i.imm;
-		break;
-
 	default:
 		invalidFunct3("OP-IMM", i.funct3);
 	}
