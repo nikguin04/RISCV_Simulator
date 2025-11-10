@@ -120,6 +120,14 @@ void exec_op_imm(instruction_t i) {
 	case 0b111: // ANDI
 		registers[i.rd] = registers[i.rs1] & i.imm;
 		return;
+	case 0b001: // SLLI
+		registers[i.rd] = registers[i.rs1] << i.imm;
+		return;
+	case 0b101: // SRLI / SRAI
+		bool srai = i.funct7;
+		registers[i.rd] = srai ? (uint32_t)registers[i.rs1] >> i.imm : registers[i.rs1] >> i.imm;
+		return;
+
 	default:
 		break;
 	}
