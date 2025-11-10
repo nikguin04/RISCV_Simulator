@@ -58,5 +58,6 @@ void executeProgram(const char *test_file) {
 		instruction_t decoded = decodeInstruction(instruction);
 		pc += 4;
 		executeInstruction(decoded);
+		registers[0] = 0;
 	}
 }
