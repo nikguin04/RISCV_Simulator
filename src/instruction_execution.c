@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "instruction_execution.h"
 #include "executor.h"
 #include "memory.h"
