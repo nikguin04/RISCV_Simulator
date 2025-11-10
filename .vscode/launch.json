@@ -5,7 +5,7 @@
 			"name": "Run RISC-V Simulator",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${workspaceFolder}/build/RISCV_Simulator",
+			"program": "${workspaceFolder}/build/RISCV_Simulator ${workspaceFolder}/tests/task3/loop.bin",
 			"args": [],
 			"stopAtEntry": true,
 			"cwd": "${workspaceFolder}",

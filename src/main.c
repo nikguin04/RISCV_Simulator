@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include "executor.h"
 
-#define TEST "./tests/task0/sblbtest"
-#define TEST_FILE TEST ".bin"
-#define TEST_RESULTFILE TEST ".res"
-
 int main(int argc, char *argv[]) {
-	executeProgram(TEST_FILE);
+	if (argc < 2) {
+		fputs("Please specify a RISC-V flat binary file to execute!\n", stderr);
+		return 1;
+	}
+
+	executeProgram(argv[1]);
 
 	// Print out all the register values
 	for (int i = 0; i < 32; i++) {
