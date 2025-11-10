@@ -55,8 +55,9 @@ void executeProgram(const char *test_file) {
 
 	while (true) {
 		uint32_t instruction = *(uint32_t *)(memory + pc);
-		pc += 4;
 		instruction_t decoded = decodeInstruction(instruction);
+		pc += 4;
 		executeInstruction(decoded);
+		registers[0] = 0;
 	}
 }
