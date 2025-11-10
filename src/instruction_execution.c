@@ -30,12 +30,14 @@ void exec_branch(instruction_t i) {
 
 
 void exec_jal(instruction_t i) {
-	// TODO
+	pc += SIGN_EXT(i.imm, 21);
+	registers[i.rd] = pc + 4;
 }
 
 
 void exec_jalr(instruction_t i) {
-	// TODO
+	pc = (SIGN_EXT(i.imm, 12) + registers[i.rs1]) & ~1;
+	registers[i.rd] = pc + 4;
 }
 
 
@@ -45,7 +47,7 @@ void exec_lui(instruction_t i) {
 
 
 void exec_auipc(instruction_t i) {
-	// TODO
+	registers[i.rd] = i.imm + pc;
 }
 
 
