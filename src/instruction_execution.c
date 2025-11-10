@@ -6,6 +6,11 @@
 #include "executor.h"
 #include "memory.h"
 
+[[noreturn]] void invalidFunct3(const char *opcode, uint8_t funct3) {
+	fprintf(stderr, "Invalid funct3 for %s opcode: %3b", opcode, funct3);
+	exit(1);
+}
+
 void exec_branch(instruction_t i) {
 	switch (i.funct3) {
 	case 0b000: // BEQ
@@ -21,7 +26,7 @@ void exec_branch(instruction_t i) {
 	case 0b111: // BGEU
 		if ((uint32_t)registers[i.rs1] >= (uint32_t)registers[i.rs2]) { break; } else { return; }
 	default:
-		exit(1);
+		invalidFunct3("BRANCH", i.funct3);
 	}
 
 	pc += SIGN_EXT(i.imm, 13) - 4;
@@ -79,7 +84,7 @@ void exec_op(instruction_t i) {
 		registers[i.rd] = registers[i.rs1] & registers[i.rs2];
 		break;
 	default:
-		exit(1);
+		invalidFunct3("OP", i.funct3);
 	}
 }
 
@@ -97,7 +102,7 @@ void exec_store(instruction_t i) {
 		*(int32_t *)(memory + address) = registers[i.rs2];
 		break;
 	default:
-		break;
+		invalidFunct3("STORE", i.funct3);
 	}
 }
 
@@ -131,7 +136,7 @@ void exec_op_imm(instruction_t i) {
 		break;
 
 	default:
-		break;
+		invalidFunct3("OP-IMM", i.funct3);
 	}
 }
 
@@ -155,7 +160,7 @@ void exec_load(instruction_t i) {
 		registers[i.rd] = *(uint16_t *)(memory + address);
 		break;
 	default:
-		break;
+		invalidFunct3("LOAD", i.funct3);
 	}
 }
 
@@ -163,6 +168,8 @@ void exec_load(instruction_t i) {
 void exec_system(instruction_t i) {
 	if (i.imm) {
 		// EBREAK
+		fputs("EBREAK instruction not supported!", stderr);
+		exit(1);
 	} else {
 		// ECALL
 		switch (registers[17]) {
